@@ -1,0 +1,119 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>전설의 꿀잠 베개</title>
+		<meta charset="utf-8">
+  		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+		<!-- JS -->   
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		<link href="https://fonts.googleapis.com/css?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+		<link rel = "stylesheet" type = "text/css" href = "test_style.css">
+	</head>
+
+	<body>
+		<img src=http://health.chosun.com/site/data/img_dir/2017/04/28/2017042801724_0.jpg>
+		<div id="Header">
+			<div class="Product_info">전설의 꿀잠 베개</div>
+			<div class="Price_tag">가격:1억원</div><br>
+			이 베개를 베고 자면 무조건 꿀잠을 자게 됩니다. 아침에 일어나지 못할 수 있으니 주의!
+		</div>
+		<div class="Product_info">주문하기</div>
+		<div>
+			<div class="detail">주문자 성함:</div>
+			<input type="text" class="textbox" id="namev"><br>
+			<div class="detail">수량:</div>
+			<select class="textbox" id="countv">
+			  <option value="1">1</option>
+			  <option value="2">2</option>
+			  <option value="3">3</option>
+			  <option value="4">4</option>
+			</select><br>
+			<div class="detail">주소:</div>
+			<input type="text" class="textbox" id="addressv"><br>
+			<div class="detail">전화번호:</div>
+			<input type="text" class="textbox" id="phonenumberv"><br>
+		</div>
+		<div class="order">
+			<input type="button" value="주문하기" onclick="orderconfirm();">
+
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+				  <th>상품명</th>
+				  <th>이름</th>
+				  <th>수량</th>
+				  <th>주소</th>
+				  <th>전화번호</th>
+				</tr>
+			  </thead>
+			<tbody id="ordertable">
+			</tbody>
+		</table>
+		<script>
+			function orderconfirm() {
+				var name1=document.getElementById('namev').value;
+				var count1=document.getElementById('countv').value;
+				var address1=document.getElementById('addressv').value;
+				var phonenumber1=document.getElementById('phonenumberv').value;
+				var item1="베개";
+				var list1 = [name1, count1, address1, phonenumber1];
+				
+				if (list1.filter(Boolean).length < list1.length) {
+					alert ("모든 정보를 입력해 주세요!")
+				}
+				else {
+					if (confirm ("이 내용으로 주문하시겠어요?")) {
+						alert("주문이 완료되었습니다!");
+						$.ajax({
+							type: "POST", 
+							url: "http://spartacodingclub.shop/order", 
+							data: { name_give: name1, count_give: count1, address_give:address1, phone_give:phonenumber1, item_give:item1}
+      					})
+						  $(document).ready(function(){
+								$('#ordertable').html('');
+							})
+						  $.ajax({
+								type: "GET",
+								url: "http://spartacodingclub.shop/order?item_give=베개",
+								data: {},
+								success: function(response){
+									if (response['result'] == 'success') {
+											let orders = response['orders'];
+											for (let i = 0; i < orders.length; i++) {
+													create_rows(orders[i]['item'],orders[i]['name'],orders[i]['count'],orders[i]['address'],orders[i]['phone']);
+										}
+									} else {
+										alert('주문 내역을 받아오지 못했습니다');
+									}
+								}
+								})	
+					}
+					else {}
+				}
+				
+			}
+			
+			function create_rows(item, name, count, address, phone) {
+					let temp1_html = '<tr>\
+						<th scope=row>'+item+'</th>\
+						<td>'+name+'</td>\
+						<td>'+count+'</td>\
+						<td>'+address+'</td>\
+						<td>'+phone+'</td>\
+					</tr>';
+					
+					
+					$('#ordertable').append(temp1_html);
+				}
+
+				</script>
+
+	</body>
+</html>
