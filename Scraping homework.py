@@ -20,12 +20,7 @@ list_selector = "#body-content > div.newest-list > div > table > tbody > tr > td
 
 rank = 1
 for music in soup.select(list_selector):
-    '''
-    title_raw = music.select_one(".title")
-    title_split1 = title_raw.split(">")
-    title_split2 = title_split1.split("<")
-    print(title_split2)
-    '''
+
     title = music.select_one(".title")
     artist = music.select_one(".artist")
     print(rank,title,artist)
